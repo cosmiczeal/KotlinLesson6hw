@@ -31,156 +31,153 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.kotlinlesson6hw.ui.theme.KotlinLesson6hwTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
-            PretzelApp()
+            KotlinLesson6hwTheme() {
+                PretzelApp()
+            }
         }
     }
 }
 
 @Composable
 fun PretzelApp() {
-    var screen by remember { mutableStateOf("main") }
-
-    if (screen == "main") {
-        MainScreen(goToCredits = { screen = "credits" })
-    } else {
-        CreditsScreen(goBack = { screen = "main" })
-    }
-}
-
-@Composable
-fun MainScreen(goToCredits: () -> Unit) {
-
+    val navController1 = rememberNavController()
     var pretzels by remember { mutableStateOf(0) }
     var multiplier by remember { mutableStateOf(1) }
     var showAlert by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xFFFFD180), Color(0xFFFFAB40))
-                )
-            )
+    NavHost(
+        navController = navController1,
+        startDestination = "StartView",
     ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-
-            Text("pretzel popper", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            Text("the best cookie clicker knockoff", fontSize = 20.sp)
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text("ur pretzels: $pretzels", fontSize = 22.sp)
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // pretzel
-            Button(
-                onClick = { pretzels += multiplier },
-                shape = CircleShape,
-                modifier = Modifier.size(140.dp)
+        composable(route = "StartView") {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color(0xFFFFD180), Color(0xFFFFAB40))
+                        )
+                    )
             ) {
-                Text("🥨", fontSize = 50.sp)
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
 
-            Text("multiplier: x$multiplier")
+                    Text("pretzel popper", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    Text("the best cookie clicker knockoff", fontSize = 20.sp)
 
-            Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-            // upgrade
-            Button(
-                onClick = {
-                    if (pretzels >= 10) {
-                        pretzels -= 10
-                        multiplier ++
-                    } else {
-                        showAlert = true // Show alert if not enough pretzels
+                    Text("ur pretzels: $pretzels", fontSize = 22.sp)
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // pretzel
+                    Button(
+                        onClick = { pretzels += multiplier },
+                        shape = CircleShape,
+                        modifier = Modifier.size(140.dp)
+                    ) {
+                        Text("🥨", fontSize = 50.sp)
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text("multiplier: x$multiplier")
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // upgrade
+                    Button(
+                        onClick = {
+                            if (pretzels >= 10) {
+                                pretzels -= 10
+                                multiplier++
+                            } else {
+                                showAlert = true // Show alert if not enough pretzels
+                            }
+                        }
+                    ) {
+                        Text("upgrade (10 pretzels)")
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Button(
+                        onClick = {
+                            navController1.navigate("credits page")
+                        }
+                    )
+                    {
+                        Text("credits page")
+                    }
+
+                    // ALERT DIALOG
+                    if (showAlert) {
+                        AlertDialog(
+                            onDismissRequest = { showAlert = false },
+                            title = { Text("Oops!") },
+                            text = { Text("You need at least 10 pretzels to buy this upgrade!") },
+                            confirmButton = {
+                                Button(onClick = { showAlert = false }) {
+                                    Text("OK")
+                                }
+                            }
+                        )
                     }
                 }
-            ) {
-                Text("upgrade (10 pretzels)")
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Button(onClick = goToCredits) {
-                Text("credits page")
             }
         }
+        composable(route = "credits page") {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFF212121))
+            ) {
 
-        // ALERT DIALOG
-        if (showAlert) {
-            AlertDialog(
-                onDismissRequest = { showAlert = false },
-                title = { Text("Oops!") },
-                text = { Text("You need at least 10 pretzels to buy this upgrade!") },
-                confirmButton = {
-                    Button(onClick = { showAlert = false }) {
-                        Text("OK")
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Text("CREDITS!!!!!", fontSize = 50.sp, color = Color.White, fontWeight = FontWeight.Bold)
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text("1. ser yen phua", color = Color.White)
+                    Text("2. chloelyn", color = Color.White)
+                    Text("3. adhya jain", color = Color.White)
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Button(
+                        onClick = {
+                            navController1.navigate("StartView")
+                        }
+                    )
+                    {
+                        Text("go back")
                     }
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun CreditsScreen(goBack: () -> Unit) {
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF212121))
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-
-            Text("CREDITS!!!!!", fontSize = 50.sp, color = Color.White, fontWeight = FontWeight.Bold)
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text("1. ser yen phua", color = Color.White)
-            Text("2. chloelyn", color = Color.White)
-            Text("3. adhya jain", color = Color.White)
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Button(onClick = goBack) {
-                Text("go back")
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    MainScreen(goToCredits = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CreditsScreenPreview() {
-    CreditsScreen(goBack = {})
 }
